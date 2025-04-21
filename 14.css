@@ -1,0 +1,102 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* General Styles */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #a49999;
+    color: #0c27a2;
+  }
+  
+  .container {
+    width: 80%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  header {
+    background-color: #48adaf;
+    color: rgb(102, 52, 52);
+    padding: 30px 0;
+    text-align: center;
+  }
+  
+  header h1 {
+    font-size: 36px;
+    margin-bottom: 10px;
+  }
+  
+  header p {
+    font-size: 18px;
+    margin-top: 0;
+  }
+  
+  /* Section Styles */
+  .section {
+    margin-bottom: 30px;
+  }
+  
+  .section h2 {
+    font-size: 28px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #407fbe;
+    padding-bottom: 5px;
+  }
+  
+  ul {
+    list-style-type: none;
+  }
+  
+  ul li {
+    font-size: 18px;
+    padding: 5px 0;
+  }
+  
+  /* Education Section */
+  .education h3 {
+    font-size: 22px;
+    color: #290ab2;
+  }
+  
+  .education p {
+    font-size: 16px;
+    color: #bd6295;
+  }
+  
+  /* Projects Section */
+  .project h3 {
+    font-size: 22px;
+    color: #290ab2;
+  }
+  
+  .project p {
+    font-size: 16px;
+    color: #bd6295;
+  }
+  
+  /* Contact Section */
+  .contact a {
+    color: #3498db;
+    text-decoration: none;
+  }
+  
+  .contact a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Footer Styles */
+  footer {
+    background-color: #354256;
+    color: rgb(54, 142, 54);
+    text-align: center;
+    padding: 20px 0;
+  }
+  
+  footer p {
+    font-size: 16px;
+  
+  }
