@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>About Arnapurna Neurological Hospital</title>
+  <style>
+    :root{
+      --bg: #f8fafc;
+      --card-bg: #fff;
+      --foreground: #0b1220;
+      --muted: #6b7280;
+      --primary: #0f766e;
+      --accent: #7c3aed;
+      --healthcare-red: #ef4444;
+      --healthcare-orange: #fb923c;
+      --healthcare-green: #10b981;
+      --primary-foreground: #042f2c;
+      --container: 1200px;
+      --radius: 14px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--foreground);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+
+    .container{
+      max-width:var(--container);
+      padding:0 20px;
+      margin:0 auto;
+    }
+
+    /* Hero */
+    .hero{ padding:56px 0; background:linear-gradient(135deg, rgba(14,165,233,0.04), rgba(247,250,252,0.02)); }
+    .hero .intro{ text-align:center; max-width:900px; margin:0 auto 16px; }
+    .pill{ display:inline-flex; align-items:center; gap:8px; padding:8px 14px; border-radius:999px; background:rgba(15,118,110,0.08); color:var(--primary); font-weight:700; margin-bottom:12px; }
+    h1{ font-size:28px; margin:8px 0 10px; }
+    @media(min-width:1024px){ h1{ font-size:36px; } }
+    p.lead{ color:var(--muted); max-width:800px; margin:0 auto; }
+
+    /* Two-column story */
+    .two-col{ display:grid; grid-template-columns:1fr; gap:24px; align-items:center; margin-top:28px; }
+    @media(min-width:1024px){ .two-col{ grid-template-columns:1fr 1fr; gap:36px; } }
+    .rounded-img{ width:100%; border-radius:18px; box-shadow:0 8px 30px rgba(12,18,26,0.06); display:block; }
+
+    /* Cards grid */
+    .grid{ display:grid; gap:18px; }
+    .grid.cols-2{ grid-template-columns: repeat(1,1fr); }
+    @media(min-width:768px){ .grid.cols-2{ grid-template-columns: repeat(2,1fr); } }
+    .card{
+      background:var(--card-bg);
+      border-radius:12px;
+      border:1px solid rgba(12,18,26,0.06);
+      padding:20px;
+      box-shadow: 0 8px 20px rgba(12,18,26,0.04);
+    }
+    .card .icon-circle{
+      width:56px; height:56px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; margin-bottom:12px;
+      background:rgba(15,118,110,0.06); color:var(--primary);
+    }
+    .card h3{ margin:6px 0 8px; font-size:18px; }
+    .muted{ color:var(--muted); }
+
+    /* Core values */
+    .core-grid{ display:grid; grid-template-columns:1fr; gap:16px; }
+    @media(min-width:768px){ .core-grid{ grid-template-columns:repeat(3,1fr); } }
+    .core-card{ padding:18px; border-radius:10px; display:flex; gap:12px; align-items:flex-start; }
+    .core-card svg{ flex:0 0 36px; width:36px; height:36px; }
+
+    /* Stats block */
+    .stats{
+      margin-top:16px;
+      background:linear-gradient(90deg, rgba(15,118,110,0.08), rgba(124,58,237,0.06));
+      padding:20px;
+      border-radius:16px;
+    }
+    .stats-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:18px; text-align:center; }
+    @media(min-width:1024px){ .stats-grid{ grid-template-columns:repeat(4,1fr); } }
+    .stat-value{ font-size:22px; font-weight:800; color:var(--primary-foreground); }
+    .stat-label{ color:rgba(4,47,44,0.8); opacity:0.9; font-size:13px; }
+
+    /* Page footer */
+    footer.site-footer{
+      margin-top:32px; padding:28px 0; text-align:center; color:var(--muted);
+      border-top:1px solid rgba(12,18,26,0.04);
+    }
+
+    /* Animations */
+    .fade-in{ animation:fadeIn .6s ease both; opacity:0; }
+    .fade-in.delay-1{ animation-delay:100ms; }
+    .fade-in.delay-2{ animation-delay:200ms; }
+    .fade-in.delay-3{ animation-delay:300ms; }
+    .fade-in.delay-4{ animation-delay:400ms; }
+    @keyframes fadeIn{ to { opacity:1; transform:none; } from { opacity:0; transform:translateY(8px); } }
+
+    /* Utility */
+    .text-center{ text-align:center; }
+    .mb-6{ margin-bottom:24px; }
+    .mb-4{ margin-bottom:16px; }
+    .muted-sm{ color:var(--muted); font-size:14px; }
+  </style>
+</head>
+<body>
+
+  <main>
+    <section class="hero">
+      <div class="container">
+        <div class="intro fade-in text-center">
+          <div class="pill" aria-hidden="true">
+            <!-- small icon -->
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M20.8 10.6c0 5.4-8.8 10.4-8.8 10.4S3.2 16 3.2 10.6a4.4 4.4 0 018.8-1.4 4.4 4.4 0 018.8 1.4z" />
+            </svg>
+            About Arnapurna Neurological Hospital
+          </div>
+
+          <h1 class="fade-in delay-1">About Arnapurna Neurological Hospital</h1>
+          <p class="lead fade-in delay-2">Leading the way in exceptional neurological care since 1995. We combine cutting-edge medical technology with compassionate care to provide the best possible outcomes for our patients.</p>
+        </div>
+
+        <div class="two-col" style="margin-top:18px;">
+          <div class="fade-in delay-2">
+            <!-- Replace src with your local asset if available -->
+            <img src="/img/stethoscope.jpg" class="rounded-img" />
+          </div>
+
+          <div class="fade-in delay-3">
+            <h2 style="margin-top:0;">Our Story</h2>
+            <p class="muted mb-4">Arnapurna Neurological Hospital was founded in 1995 with a simple mission: to provide world-class neurological and general healthcare services that are accessible, affordable, and patient-centered. Over the past three decades, we have grown from a small community clinic to a comprehensive neurological center.</p>
+            <p class="muted mb-4">Today, we serve over 50,000 patients annually across multiple specialties, with a team of more than 200 healthcare professionals dedicated to your wellbeing.</p>
+            <p class="muted">Our state-of-the-art facilities include advanced diagnostic equipment, modern surgical suites, and comfortable patient rooms designed to support healing and recovery.</p>
+          </div>
+        </div>
+
+        <div class="container" style="margin-top:28px;">
+          <div class="grid cols-2 mb-6">
+            <div class="card fade-in delay-3" style="background:linear-gradient(180deg, rgba(14,165,233,0.03), rgba(255,255,255,0.02)); border:0;">
+              <div class="icon-circle" aria-hidden="true">
+                <!-- Target icon -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="8"></circle>
+                  <circle cx="12" cy="12" r="4"></circle>
+                </svg>
+              </div>
+              <h3>Our Mission</h3>
+              <p class="muted">To deliver exceptional neurological and general healthcare services with compassion, integrity, and excellence. We strive to improve the health and wellbeing of our community through innovative medical practices and personalized patient care.</p>
+            </div>
+
+            <div class="card fade-in delay-4" style="background:linear-gradient(180deg, rgba(16,185,129,0.03), rgba(255,255,255,0.02)); border:0;">
+              <div class="icon-circle" aria-hidden="true" style="background:rgba(16,185,129,0.06); color:var(--healthcare-green);">
+                <!-- Eye icon -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M2 12s4-8 10-8 10 8 10 8-4 8-10 8S2 12 2 12z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </div>
+              <h3>Our Vision</h3>
+              <p class="muted">To be the leading neurological care provider in the region, recognized for our clinical excellence, patient satisfaction, and commitment to advancing medical science. We envision a healthier future for all through accessible, quality healthcare.</p>
+            </div>
+          </div>
+
+          <div class="text-center mb-4">
+            <h2 style="margin:0;">Our Core Values</h2>
+          </div>
+
+          <div class="core-grid fade-in delay-3" style="margin-bottom:20px;">
+            <!-- Core values rendered by JS -->
+          </div>
+
+          <div class="stats fade-in delay-4">
+            <div class="stats-grid" id="statsGrid" aria-hidden="false">
+              <!-- Stats rendered by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div style="max-width:900px;margin:0 auto;">
+        <div style="font-weight:700;color:var(--primary-foreground);">Arnapurna Neurological Hospital</div>
+        <div class="muted-sm">© <span id="year"></span> Arnapurna Neurological Hospital — Trusted neurological care since 1995</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Data (adapted from original React arrays)
+    const coreValues = [
+      {
+        icon: 'heart',
+        title: "Compassion",
+        description: "We treat every patient with empathy, respect, and dignity, understanding that behind every medical case is a person with unique needs and concerns.",
+        color: "var(--healthcare-red)"
+      },
+      {
+        icon: 'award',
+        title: "Excellence",
+        description: "We maintain the highest standards in medical care, continuously improving our services and staying at the forefront of medical innovation and best practices.",
+        color: "var(--healthcare-orange)"
+      },
+      {
+        icon: 'users',
+        title: "Collaboration",
+        description: "We believe in teamwork and interdisciplinary collaboration, bringing together diverse expertise to provide comprehensive, coordinated care for our patients.",
+        color: "var(--healthcare-green)"
+      },
+    ];
+
+    const stats = [
+      { value: "30+", label: "Years of Service" },
+      { value: "200+", label: "Medical Professionals" },
+      { value: "50K+", label: "Patients Annually" },
+      { value: "15+", label: "Specialized Departments" },
+    ];
+
+    function getIconSVG(name, color = 'currentColor') {
+      switch(name) {
+        case 'heart':
+          return `<svg viewBox="0 0 24 24" width="36" height="36" fill="${color}" aria-hidden="true">
+            <path d="M12 21s-7.5-4.9-10-8.2C-0.2 8.4 3.6 4 7.7 6.3 9.9 7.6 12 10 12 10s2.1-2.4 4.3-3.7C20.4 4 24.2 8.4 22 12.8 19.5 16.2 12 21 12 21z"></path>
+          </svg>`;
+        case 'award':
+          return `<svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="${color}" stroke-width="1.6" aria-hidden="true">
+            <circle cx="12" cy="8" r="4"></circle>
+            <path d="M8 17l-1 4 5-2 5 2-1-4"></path>
+          </svg>`;
+        case 'users':
+          return `<svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="${color}" stroke-width="1.6" aria-hidden="true">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>`;
+        default:
+          return '';
+      }
+    }
+
+    // Render core values
+    const coreGrid = document.querySelector('.core-grid');
+    coreValues.forEach((cv, i) => {
+      const el = document.createElement('div');
+      el.className = 'core-card card fade-in';
+      el.style.animationDelay = `${400 + i*100}ms`;
+      el.innerHTML = `
+        <div style="flex-shrink:0">
+          ${getIconSVG(cv.icon, cv.color)}
+        </div>
+        <div>
+          <h3 style="margin:0 0 6px;">${cv.title}</h3>
+          <p class="muted" style="margin:0;font-size:14px;">${cv.description}</p>
+        </div>
+      `;
+      coreGrid.appendChild(el);
+    });
+
+    // Render stats
+    const statsGrid = document.getElementById('statsGrid');
+    stats.forEach(s => {
+      const sEl = document.createElement('div');
+      sEl.innerHTML = `
+        <div class="stat-value">${s.value}</div>
+        <div class="stat-label">${s.label}</div>
+      `;
+      statsGrid.appendChild(sEl);
+    });
+
+    // Footer year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Make images lazy-load friendly
+    document.querySelectorAll('img').forEach(img => {
+      img.loading = 'lazy';
+    });
+  </script>
+</body>
+</html>

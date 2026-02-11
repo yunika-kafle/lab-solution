@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Material-UI Icons CDN -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-design-icons/7.2.96/MaterialDesignIcons.min.css">
+    <!-- Material-UI via CDN -->
+    <script src="https://unpkg.com/@mui/material@5.14.0/dist/umd/material-ui.production.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="patient.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <i class="fas fa-hospital"></i>
+                <span>HealthCare Portal</span>
+            </div>
+            <nav class="nav">
+                <ul class="nav-links">
+                    <li><a href="#dashboard">Dashboard</a></li>
+                    <li><a href="#appointments">Appointments</a></li>
+                    <li><a href="#doctors">Doctors</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <!-- Material-UI Notifications Icon -->
+                <button class="notification-btn" id="notificationBtn" title="Notifications">
+                    <span class="material-icons-container">
+                        <svg class="material-icons" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V2c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 3.36 6 5.92 6 9v5l-2 2v1h16v-1l-2-2z"/>
+                        </svg>
+                    </span>
+                    <span class="notification-badge">3</span>
+                </button>
+                <div class="user-profile-menu">
+                    <button class="profile-btn" id="profileBtn">
+                        <!-- Material-UI Account Circle Icon -->
+                        <span class="material-icons-container">
+                            <svg class="material-icons" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+                            </svg>
+                        </span>
+                        <span>John Doe</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="dropdown-menu" id="dropdownMenu">
+                        <a href="#profile" class="dropdown-item">
+                            <i class="fas fa-user"></i> My Profile
+                        </a>
+                        <a href="#change-password" class="dropdown-item">
+                            <i class="fas fa-key"></i> Change Password
+                        </a>
+                        <a href="#notifications" class="dropdown-item">
+                            <i class="fas fa-envelope"></i> Notifications
+                        </a>
+                        <a href="#appointments" class="dropdown-item">
+                            <i class="fas fa-calendar"></i> My Appointments
+                        </a>
+                        <a href="#reports" class="dropdown-item">
+                            <i class="fas fa-file-medical"></i> Reports
+                        </a>
+                        <a href="#feedback" class="dropdown-item">
+                            <i class="fas fa-comment"></i> Feedback
+                        </a>
+                        <hr>
+                        <a href="#logout" class="dropdown-item logout">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notification-header">
+            <h3>Notifications</h3>
+            <button class="close-btn" id="closeNotification"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="notification-list">
+            <div class="notification-item unread">
+                <div class="notification-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <div class="notification-content">
+                    <p class="notification-title">Appointment Reminder</p>
+                    <p class="notification-text">You have an appointment with Dr. Smith tomorrow at 2:00 PM</p>
+                    <span class="notification-time">2 hours ago</span>
+                </div>
+            </div>
+            <div class="notification-item unread">
+                <div class="notification-icon">
+                    <i class="fas fa-file-medical"></i>
+                </div>
+                <div class="notification-content">
+                    <p class="notification-title">Report Available</p>
+                    <p class="notification-text">Your lab test report is now available for download</p>
+                    <span class="notification-time">1 day ago</span>
+                </div>
+            </div>
+            <div class="notification-item">
+                <div class="notification-icon">
+                    <i class="fas fa-pills"></i>
+                </div>
+                <div class="notification-content">
+                    <p class="notification-title">Prescription Updated</p>
+                    <p class="notification-text">Your prescription has been updated by Dr. Johnson</p>
+                    <span class="notification-time">3 days ago</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-menu">
+                <div class="menu-item active" data-section="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </div>
+                <div class="menu-item" data-section="appointments">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>My Appointments</span>
+                </div>
+                <div class="menu-item" data-section="doctors">
+                    <i class="fas fa-user-md"></i>
+                    <span>Doctors</span>
+                </div>
+                <div class="menu-item" data-section="reports">
+                    <i class="fas fa-file-pdf"></i>
+                    <span>Reports</span>
+                </div>
+                <div class="menu-item" data-section="feedback">
+                    <i class="fas fa-star"></i>
+                    <span>Feedback</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <div class="section-header">
+                    <h1>Welcome, Yunika!</h1>
+                    <p>Here's your health overview</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Quick Stats -->
+                    <div class="stats-container">
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #e8f5e9;">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Total Appointments</p>
+                                <p class="stat-value">12</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #e3f2fd;">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Active Doctors</p>
+                                <p class="stat-value">6</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #fff3e0;">
+                                <i class="fas fa-file-medical"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Medical Reports</p>
+                                <p class="stat-value">8</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon" style="background: #f3e5f5;">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Prescriptions</p>
+                                <p class="stat-value">5</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Appointments -->
+                    <div class="upcoming-section">
+                        <div class="section-title">
+                            <h2>Upcoming Appointments</h2>
+                            <a href="#appointments" class="view-all">View All</a>
+                        </div>
+                        <div class="appointments-list">
+                            <div class="appointment-card">
+                                <div class="appointment-date">
+                                    <span class="day">14</span>
+                                    <span class="month">Feb</span>
+                                </div>
+                                <div class="appointment-details">
+                                    <h3>Dr. Basant Pant</h3>
+                                    <p>Neurology</p>
+                                    <p class="time"><i class="fas fa-clock"></i> 2:00 PM - 2:30 PM</p>
+                                </div>
+                                <button class="btn-secondary btn-sm">Details</button>
+                            </div>
+                            <div class="appointment-card">
+                                <div class="appointment-date">
+                                    <span class="day">18</span>
+                                    <span class="month">Feb</span>
+                                </div>
+                                <div class="appointment-details">
+                                    <h3>Dr. Bibek Khadka</h3>
+                                    <p>General Surgery</p>
+                                    <p class="time"><i class="fas fa-clock"></i> 10:00 AM - 10:30 AM</p>
+                                </div>
+                                <button class="btn-secondary btn-sm">Details</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Appointments Section -->
+            <section id="appointments" class="content-section">
+                <div class="section-header">
+                    <h1>My Appointments</h1>
+                    <button class="btn-primary" id="bookAppointmentBtn">Book Appointment</button>
+                </div>
+
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="upcoming">Upcoming</button>
+                    <button class="tab-btn" data-tab="past">Past</button>
+                </div>
+
+                <div class="tab-content active" id="upcoming">
+                    <div class="appointments-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Doctor Name</th>
+                                    <th>Speciality</th>
+                                    <th>Date & Time</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Dr. Resha Shrestha</td>
+                                    <td>Neurologist</td>
+                                    <td>Feb 14, 2026 - 2:00 PM</td>
+                                    <td><span class="status confirmed">Confirmed</span></td>
+                                    <td>
+                                        <button class="btn-link">Reschedule</button>
+                                        <button class="btn-link cancel">Cancel</button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Dr. Manish Bikram Shah</td>
+                                    <td>Orthopedic</td>
+                                    <td>Feb 18, 2026 - 10:00 AM</td>
+                                    <td><span class="status pending">Pending</span></td>
+                                    <td>
+                                        <button class="btn-link">Reschedule</button>
+                                        <button class="btn-link cancel">Cancel</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="past">
+                    <div class="appointments-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Doctor Name</th>
+                                    <th>Speciality</th>
+                                    <th>Date & Time</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Dr. Neetu Singh</td>
+                                    <td>Gynecology</td>
+                                    <td>Feb 5, 2026 - 11:00 AM</td>
+                                    <td><span class="status completed">Completed</span></td>
+                                    <td>
+                                        <button class="btn-link">View Report</button>
+                                        <button class="btn-link">Leave Feedback</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Doctors Section -->
+            <section id="doctors" class="content-section">
+                <div class="section-header">
+                    <h1>Our Doctors</h1>
+                </div>
+
+                <div class="search-filter">
+                    <input type="text" placeholder="Search doctors..." class="search-input">
+                    <select class="filter-select">
+                        <option>All Specialties</option>
+                        <option>Neurology</option>
+                        <option>General Surgery</option>
+                        <option>Plastic Surgery</option>
+                        <option>Neurology</option>
+                        <option>Orthopedics</option>
+                        <option>Gynecology</option>
+                    </select>
+                </div>
+
+                <div class="doctors-grid">
+                    <!-- Doctor 1 -->
+                    <div class="doctor-card">
+                        <img src="https://www.annapurnahospital.com.np/uploads/team/1751350906.jpg" alt="Dr. Basant Pant" class="doctor-image">
+                        <div classhttps:="doctor-info">
+                            <h3>Dr. Basant Pant</h3>
+                            <p class="specialty">Neurosurgeon</p>
+                            <p class="experience">15 years experience</p>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span>4.5 (120 reviews)</span>
+                            </div>
+                            <button class="btn-primary btn-sm book-appointment-btn" data-doctor="Dr. Basant Pant">Book Appointment</button>
+                        </div>
+                    </div>
+
+                    <!-- Doctor 2 -->
+                    <div class="doctor-card">
+                        <img src="https://www.annapurnahospital.com.np/uploads/doctor/1751350510.jpg" alt="Dr. Bibek Khadka" class="doctor-image">
+                        <div class="doctor-info">
+                            <h3>Dr. Bibek Khadka</h3>
+                            <p class="specialty">General Surgery</p>
+                            <p class="experience">12 years experience</p>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span>5.0 (95 reviews)</span>
+                            </div>
+                            <button class="btn-primary btn-sm book-appointment-btn" data-doctor="Dr. Bibek Khadka">Book Appointment</button>
+                        </div>
+                    </div>
+
+                    <!-- Doctor 3 -->
+                    <div class="doctor-card">
+                        <img src="https://www.annapurnahospital.com.np/uploads/doctor/1751362543.jpg" alt="Dr. Surendra Jung Basnet" class="doctor-image">
+                        <div class="doctor-info">
+                            <h3>Dr. Surendra Jung Basnet</h3>
+                            <p class="specialty">Plastic Surgery</p>
+                            <p class="experience">10 years experience</p>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span>4.8 (78 reviews)</span>
+                            </div>
+                            <button class="btn-primary btn-sm book-appointment-btn" data-doctor="Dr. Surendra Jung Basnet">Book Appointment</button>
+                        </div>
+                    </div>
+
+                    <!-- Doctor 4 -->
+                    <div class="doctor-card">
+                        <img src="https://www.annapurnahospital.com.np/uploads/doctor/1751276175.jpg" alt="Dr. Resha Shrestha" class="doctor-image">
+                        <div class="doctor-info">
+                            <h3>Dr. Resha Shrestha</h3>
+                            <p class="specialty">Neurology</p>
+                            <p class="experience">18 years experience</p>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span>4.9 (150 reviews)</span>
+                            </div>
+                            <button class="btn-primary btn-sm book-appointment-btn" data-doctor="Dr. Resha Shrestha">Book Appointment</button>
+                        </div>
+                    </div>
+
+                    <!-- Doctor 5 -->
+                    <div class="doctor-card">
+                        <img src="https://annapurnahospital.com.np/uploads/doctor/1751350161.jpg" alt="Dr. Manish Bikram Shah" class="doctor-image">
+                        <div class="doctor-info">
+                            <h3>Dr. Manish Bikram Shah</h3>
+                            <p class="specialty">Orthopedics</p>
+                            <p class="experience">14 years experience</p>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span>4.7 (110 reviews)</span>
+                            </div>
+                            <button class="btn-primary btn-sm book-appointment-btn" data-doctor="Dr. Manish Bikram Shah">Book Appointment</button>
+                        </div>
+                    </div>
+
+                    <!-- Doctor 6 -->
+                    <div class="doctor-card">
+                        <img src="https://annapurnahospital.com.np/uploads/doctor/1751360097.jpg" alt="Dr. Neetu Singh" class="doctor-image">
+                        <div class="doctor-info">
+                            <h3>Dr. Neetu Singh</h3>
+                            <p class="specialty">Gynecology</p>
+                            <p class="experience">11 years experience</p>
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <span>4.9 (130 reviews)</span>
+                            </div>
+                            <button class="btn-primary btn-sm book-appointment-btn" data-doctor="Dr. Neetu Singh">Book Appointment</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reports Section -->
+            <section id="reports" class="content-section">
+                <div class="section-header">
+                    <h1>Medical Reports</h1>
+                </div>
+
+                <div class="reports-list">
+                    <div class="report-card">
+                        <div class="report-header">
+                            <h3>Blood Test Report</h3>
+                            <span class="report-date">Feb 8, 2026</span>
+                        </div>
+                        <p class="report-doctor">By: Dr. Neetu Singh</p>
+                        <p class="report-status">Status: <span class="status completed">Completed</span></p>
+                        <div class="report-actions">
+                            <button class="btn-secondary btn-sm">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button class="btn-secondary btn-sm">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-header">
+                            <h3>X-Ray Report</h3>
+                            <span class="report-date">Feb 1, 2026</span>
+                        </div>
+                        <p class="report-doctor">By: Dr. Basant Pant</p>
+                        <p class="report-status">Status: <span class="status completed">Completed</span></p>
+                        <div class="report-actions">
+                            <button class="btn-secondary btn-sm">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button class="btn-secondary btn-sm">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="report-card">
+                        <div class="report-header">
+                            <h3>Ultrasound Report</h3>
+                            <span class="report-date">Jan 25, 2026</span>
+                        </div>
+                        <p class="report-doctor">By: Dr. Neetu Singh</p>
+                        <p class="report-status">Status: <span class="status completed">Completed</span></p>
+                        <div class="report-actions">
+                            <button class="btn-secondary btn-sm">
+                                <i class="fas fa-download"></i> Download
+                            </button>
+                            <button class="btn-secondary btn-sm">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Feedback Section -->
+            <section id="feedback" class="content-section">
+                <div class="section-header">
+                    <h1>Feedback & Reviews</h1>
+                </div>
+
+                <div class="feedback-grid">
+                    <div class="feedback-form-container">
+                        <h2>Leave Feedback</h2>
+                        <form class="feedback-form">
+                            <div class="form-group">
+                                <label for="doctor-select">Select Doctor:</label>
+                                <select id="doctor-select" required>
+                                    <option>-- Select Doctor --</option>
+                                    <option>Dr. Basant Pant</option>
+                                    <option>Dr. Bibek Khadka</option>
+                                    <option>Dr. Surendra Jung Basnet</option>
+                                    <option>Dr. Resha Shrestha</option>
+                                    <option>Dr. Manish Bikram Shah</option>
+                                    <option>Dr. Neetu Singh</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="rating">Rating:</label>
+                                <div class="rating-input">
+                                    <i class="fas fa-star" data-value="1"></i>
+                                    <i class="fas fa-star" data-value="2"></i>
+                                    <i class="fas fa-star" data-value="3"></i>
+                                    <i class="fas fa-star" data-value="4"></i>
+                                    <i class="fas fa-star" data-value="5"></i>
+                                </div>
+                                <input type="hidden" id="rating" name="rating">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="feedback-text">Your Feedback:</label>
+                                <textarea id="feedback-text" rows="5" placeholder="Share your experience..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-primary">Submit Feedback</button>
+                        </form>
+                    </div>
+
+                    <div class="feedback-list-container">
+                        <h2>Recent Feedback</h2>
+                        <div class="feedback-reviews">
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <h4>Dr. Basant Pant</h4>
+                                    <div class="review-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                                <p class="review-text">Excellent doctor! Very professional and caring. Highly recommended.</p>
+                                <span class="review-date">2 days ago</span>
+                            </div>
+
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <h4>Dr. Bibek Khadka</h4>
+                                    <div class="review-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                </div>
+                                <p class="review-text">Good experience. The doctor was knowledgeable but could have spent more time explaining.</p>
+                                <span class="review-date">1 week ago</span>
+                            </div>
+
+                            <div class="review-card">
+                                <div class="review-header">
+                                    <h4>Dr. Surendra Jung Basnet</h4>
+                                    <div class="review-rating">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                </div>
+                                <p class="review-text">Very helpful and thorough examination. Great experience overall.</p>
+                                <span class="review-date">3 days ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+
+    <!-- Book Appointment Modal -->
+    <div class="modal" id="bookAppointmentModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Book Appointment</h2>
+                <button class="modal-close" id="closeBookModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="booking-form">
+                    <div class="form-group">
+                        <label for="doctor-name">Doctor:</label>
+                        <select id="doctor-name" required>
+                            <option>-- Select Doctor --</option>
+                            <option>Dr. Basant Pant</option>
+                            <option>Dr. Bibek Khadka</option>
+                            <option>Dr. Surendra Jung Basnet</option>
+                            <option>Dr. Resha Shrestha</option>
+                            <option>Dr. Manish Bikram Shah</option>
+                            <option>Dr. Neetu Singh</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appointment-date">Date:</label>
+                        <input type="date" id="appointment-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appointment-time">Time:</label>
+                        <select id="appointment-time" required>
+                            <option>-- Select Time --</option>
+                            <option>9:00 AM</option>
+                            <option>9:30 AM</option>
+                            <option>10:00 AM</option>
+                            <option>10:30 AM</option>
+                            <option>2:00 PM</option>
+                            <option>2:30 PM</option>
+                            <option>3:00 PM</option>
+                            <option>3:30 PM</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="appointment-reason">Reason for Visit:</label>
+                        <textarea id="appointment-reason" rows="4" placeholder="Describe your symptoms or reason for visit..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="consultation-type">Consultation Type:</label>
+                        <select id="consultation-type" required>
+                            <option>-- Select Type --</option>
+                            <option>In-Person</option>
+                            <option>Video Call</option>
+                            <option>Phone Call</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Appointment Fee:</label>
+                        <div class="fee-display">
+                            <span class="fee-amount">NPR 500</span>
+                            <small>Payment will be processed via eSewa</small>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-primary" id="proceedPaymentBtn">Proceed to Payment (eSewa)</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- eSewa Payment Modal -->
+    <div class="modal" id="esewayPaymentModal">
+        <div class="modal-content esewa-payment-content">
+            <div class="modal-header">
+                <h2>Payment Gateway - eSewa</h2>
+                <button class="modal-close" id="closePaymentModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-summary">
+                    <h3>Order Summary</h3>
+                    <div class="summary-item">
+                        <span>Doctor Appointment Fee:</span>
+                        <span>NPR 500</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Platform Fee:</span>
+                        <span>NPR 0</span>
+                    </div>
+                    <div class="summary-item total">
+                        <span>Total Amount:</span>
+                        <span>NPR 500</span>
+                    </div>
+                </div>
+
+                <div class="payment-methods">
+                    <h3>Select Payment Method</h3>
+                    <div class="method-options">
+                        <label class="method-option">
+                            <input type="radio" name="payment-method" value="esewa" checked>
+                            <div class="method-content">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <span>Pay with eSewa</span>
+                            </div>
+                        </label>
+                        <label class="method-option">
+                            <input type="radio" name="payment-method" value="card">
+                            <div class="method-content">
+                                <i class="fas fa-credit-card"></i>
+                                <span>Debit/Credit Card</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="esewa-details">
+                    <h3>eSewa Payment Details</h3>
+                    <div class="form-group">
+                        <label for="esewa-email">eSewa Email:</label>
+                        <input type="email" id="esewa-email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="esewa-phone">Phone Number:</label>
+                        <input type="tel" id="esewa-phone" placeholder="98xxxxxxxx" required>
+                    </div>
+                    <p class="esewa-note">
+                        <i class="fas fa-info-circle"></i>
+                        You will be redirected to eSewa to complete the payment securely.
+                    </p>
+                </div>
+
+                <button type="button" class="btn-primary btn-large" id="payWithEsewaBtn">
+                    <i class="fas fa-lock"></i> Pay NPR 500 with eSewa
+                </button>
+                <button type="button" class="btn-secondary" id="cancelPaymentBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>My Profile</h2>
+                <button class="modal-close" id="closeProfileModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="profile-form">
+                    <div class="form-group">
+                        <label for="first-name">First Name:</label>
+                        <input type="text" id="first-name" value="John" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="last-name">Last Name:</label>
+                        <input type="text" id="last-name" value="Doe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" value="john@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number:</label>
+                        <input type="tel" id="phone" value="+977 98xxxxxxxx" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dob">Date of Birth:</label>
+                        <input type="date" id="dob" value="1990-01-15" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender">Gender:</label>
+                        <select id="gender" required>
+                            <option>Male</option>
+                            <option>Female</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Address:</label>
+                        <textarea id="address" rows="3" required>Kathmandu, Nepal</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="blood-group">Blood Group:</label>
+                        <select id="blood-group" required>
+                            <option>-- Select Blood Group --</option>
+                            <option>O+</option>
+                            <option>O-</option>
+                            <option>A+</option>
+                            <option>A-</option>
+                            <option>B+</option>
+                            <option>B-</option>
+                            <option>AB+</option>
+                            <option>AB-</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal" id="changePasswordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Change Password</h2>
+                <button class="modal-close" id="closePasswordModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="password-form">
+                    <div class="form-group">
+                        <label for="current-password">Current Password:</label>
+                        <div class="password-input">
+                            <input type="password" id="current-password" required>
+                            <button type="button" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new-password">New Password:</label>
+                        <div class="password-input">
+                            <input type="password" id="new-password" required>
+                            <button type="button" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <small class="password-requirements">
+                            Password must be at least 8 characters and contain uppercase, lowercase, and numbers
+                        </small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm Password:</label>
+                        <div class="password-input">
+                            <input type="password" id="confirm-password" required>
+                            <button type="button" class="toggle-password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Update Password</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Settings Modal -->
+    <div class="modal" id="notificationsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Notification Settings</h2>
+                <button class="modal-close" id="closeNotificationsModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="notifications-form">
+                    <div class="notification-setting">
+                        <div class="setting-info">
+                            <h3>Email Notifications</h3>
+                            <p>Receive updates via email</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="notification-setting">
+                        <div class="setting-info">
+                            <h3>Appointment Reminders</h3>
+                            <p>Get reminded before your appointments</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="notification-setting">
+                        <div class="setting-info">
+                            <h3>Report Available Alerts</h3>
+                            <p>Notify when your medical reports are ready</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="notification-setting">
+                        <div class="setting-info">
+                            <h3>Prescription Updates</h3>
+                            <p>Get notified when prescriptions are updated</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Save Settings</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal" id="successModal">
+        <div class="modal-content success-modal">
+            <div class="success-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 id="successTitle">Success!</h2>
+            <p id="successMessage">Your action has been completed successfully.</p>
+            <button class="btn-primary" id="successOkBtn">OK</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

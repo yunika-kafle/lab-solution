@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Instant Medical Consultation</title>
+  <style>
+    :root{
+      --background: #f8fafc;
+      --foreground: #0b1220;
+      --muted-foreground: #6b7280;
+      --primary: #0f766e;
+      --accent: #7c3aed;
+      --card-bg: #fff;
+      --border: rgba(15,23,42,0.06);
+      --healthcare-green: #10b981;
+      --radius: 12px;
+      --container-width: 1200px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--background);
+      color:var(--foreground);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+
+    .container{
+      width:100%;
+      max-width:var(--container-width);
+      margin:0 auto;
+      padding:0 20px;
+      box-sizing:border-box;
+    }
+
+    /* Hero */
+    .hero{
+      padding:80px 0;
+      background: linear-gradient(135deg, rgba(15,118,110,0.06), rgba(248,250,252,0) 40%, rgba(124,58,237,0.06));
+    }
+    .center{ text-align:center; max-width:760px; margin:0 auto; }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(15,118,110,0.08);
+      color:var(--primary);
+      font-weight:600;
+      font-size:14px;
+      margin-bottom:18px;
+    }
+    h1{ font-size:40px; margin:12px 0 18px; }
+    @media(min-width:768px){ h1{ font-size:48px; } }
+    p.lead{ color:var(--muted-foreground); font-size:18px; margin:0 0 22px; }
+
+    .actions{ display:flex; gap:12px; justify-content:center; flex-direction:column; }
+    @media(min-width:640px){ .actions{ flex-direction:row; } }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:12px 18px;
+      border-radius:10px;
+      border:0;
+      cursor:pointer;
+      font-weight:700;
+      background:var(--primary);
+      color:white;
+      transition:all .15s ease;
+      font-size:16px;
+    }
+    .btn.outline{ background:transparent; border:2px solid var(--border); color:var(--foreground); }
+    .btn.lg{ padding:14px 20px; font-size:16px; }
+
+    section{ padding:56px 0; }
+
+    h2.section-title{ font-size:28px; margin:0 0 28px; text-align:center; font-weight:800; }
+
+    .grid{ display:grid; gap:18px; }
+    .grid.features{ grid-template-columns: repeat(1,1fr); }
+    @media(min-width:768px){ .grid.features{ grid-template-columns: repeat(3,1fr); } }
+    .grid.specialties{ grid-template-columns: repeat(2,1fr); max-width:720px; margin:0 auto; }
+    @media(min-width:768px){ .grid.specialties{ grid-template-columns: repeat(4,1fr); } }
+
+    .card{
+      background:var(--card-bg);
+      border-radius:var(--radius);
+      padding:18px;
+      border:1px solid var(--border);
+      text-align:center;
+      box-shadow:0 6px 18px rgba(12,18,26,0.03);
+      transition:transform .12s ease, border-color .12s ease;
+    }
+    .card:hover{ transform:translateY(-4px); border-color: rgba(15,23,42,0.12); }
+
+    .icon-circle{
+      width:64px; height:64px; border-radius:50%;
+      display:inline-flex; align-items:center; justify-content:center;
+      background:rgba(15,118,110,0.06); margin:0 auto 14px;
+    }
+    .card-title{ font-weight:800; font-size:18px; margin-bottom:8px; }
+    .muted{ color:var(--muted-foreground); font-size:15px; }
+
+    .specialty{
+      display:flex; align-items:center; gap:10px; padding:12px; border-radius:10px;
+      background:var(--card-bg); border:1px solid var(--border);
+    }
+
+    .check{
+      width:20px; height:20px; color:var(--healthcare-green); flex:0 0 20px;
+    }
+
+    .cta-card{
+      max-width:720px; margin:0 auto; padding:28px; border-radius:14px;
+      background:linear-gradient(180deg, rgba(15,118,110,0.04), rgba(247,250,252,0.02));
+      border:1px solid rgba(15,118,110,0.12); text-align:center;
+    }
+
+    .mb-6{ margin-bottom:24px; }
+    .mb-4{ margin-bottom:16px; }
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <div class="container">
+      <div class="center">
+        <div class="pill" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 11.5 3 8.38 8.38 0 0 1 15.3 3.9" />
+          </svg>
+          <span>Chat Consultation</span>
+        </div>
+
+        <h1>Instant Medical Consultation</h1>
+        <p class="lead">Connect with certified doctors instantly via chat. Get medical advice, prescriptions, and follow-up care from the comfort of your home.</p>
+
+        <div class="actions">
+          <button id="startChatBtn" class="btn lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 11.5 3 8.38 8.38 0 0 1 15.3 3.9" />
+            </svg>
+            Start Chat Now
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <section>
+    <div class="container">
+      <div class="grid features" id="featuresGrid"></div>
+    </div>
+  </section>
+
+  <!-- Specialties -->
+  <section style="background:rgba(15,23,42,0.02);">
+    <div class="container">
+      <h2 class="section-title">Available Specialties</h2>
+      <div class="grid specialties" id="specialtiesGrid" style="margin-top:12px;"></div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section>
+    <div class="container">
+      <div class="cta-card card">
+        <h3 style="font-size:22px;margin:0 0 8px;font-weight:800;">Ready to Get Started?</h3>
+        <p class="muted mb-4">No appointment needed. Chat with a doctor right now.</p>
+        <button id="startPaidChatBtn" class="btn lg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 11.5 3 8.38 8.38 0 0 1 15.3 3.9" />
+          </svg>
+          Start Consultation - $29
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Data arrays (from original React component)
+    const features = [
+      { icon: "zap", title: "Instant Response", description: "Connect with a doctor within minutes" },
+      { icon: "clock", title: "24/7 Available", description: "Get help anytime, day or night" },
+      { icon: "shield", title: "Secure & Private", description: "Your conversations are encrypted" },
+    ];
+
+    const specialties = [
+      "General Medicine", "Pediatrics", "Dermatology", "Mental Health",
+      "Nutrition", "Women's Health", "Orthopedics", "Cardiology"
+    ];
+
+    // Small icon renderer
+    function iconSVG(name, size = 28) {
+      switch(name) {
+        case 'zap':
+          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M13 2L3 14h9l-1 8L21 10h-9l1-8z"></path>
+          </svg>`;
+        case 'clock':
+          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 7v5l3 2"></path>
+          </svg>`;
+        case 'shield':
+          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M12 2l7 4v5c0 5-3.5 9-7 11-3.5-2-7-6-7-11V6l7-4z"></path>
+          </svg>`;
+        case 'message':
+          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7A8.38 8.38 0 0 1 4 11.5 8.5 8.5 0 0 1 11.5 3 8.38 8.38 0 0 1 15.3 3.9" />
+          </svg>`;
+        case 'check':
+          return `<svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M20 6L9 17l-5-5"></path>
+          </svg>`;
+        default:
+          return '';
+      }
+    }
+
+    // Render Features
+    const featuresGrid = document.getElementById('featuresGrid');
+    features.forEach(f => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="icon-circle" aria-hidden="true">${iconSVG(f.icon, 26)}</div>
+        <div class="card-title">${f.title}</div>
+        <div class="muted">${f.description}</div>
+      `;
+      featuresGrid.appendChild(card);
+    });
+
+    // Render Specialties
+    const specialtiesGrid = document.getElementById('specialtiesGrid');
+    specialties.forEach(s => {
+      const el = document.createElement('div');
+      el.className = 'specialty';
+      el.innerHTML = `
+        ${iconSVG('check', 18)}
+        <div style="font-weight:600;color:var(--foreground)">${s}</div>
+      `;
+      specialtiesGrid.appendChild(el);
+    });
+
+    // Button handlers (demo)
+    document.getElementById('startChatBtn').addEventListener('click', () => {
+      alert('Starting instant chat consultation (demo).');
+    });
+    document.getElementById('startPaidChatBtn').addEventListener('click', () => {
+      alert('Starting paid consultation ($29) (demo).');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign Up</title>
+  <style>
+    /* Shared styling (kept compact) */
+    :root { --accent: #4256d7; --bg: #f4f7fb; --danger: #eb556b; --muted:#6b7280; }
+    html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg)}
+    .center {min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .container{background:#fff;border-radius:1rem;box-shadow:0 4px 32px rgba(0,0,0,0.09);padding:28px;width:370px;max-width:96vw}
+    .form-header{text-align:center;margin-bottom:18px}
+    .form-header h1{margin:0;color:var(--accent);font-size:1.6rem}
+    .form-header p{margin:4px 0 0;color:var(--muted)}
+    .form-group{margin-bottom:12px}
+    label{display:block;font-weight:600;margin-bottom:6px}
+    .input-wrapper{position:relative}
+    input[type="text"],input[type="password"],input[type="date"]{
+      width:100%;padding:10px 40px 10px 10px;border:1px solid #e1e6ee;border-radius:6px;box-sizing:border-box;font-size:1rem;
+    }
+    input.error{border-color:var(--danger);background:#fdf0f2}
+    .toggle-password{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;cursor:pointer;padding:6px;font-size:1rem}
+    .submit-btn{width:100%;background:var(--accent);color:#fff;padding:11px;border-radius:6px;border:0;font-weight:700;cursor:pointer}
+    .submit-btn:disabled{background:#bbb;cursor:not-allowed}
+    .error-message{color:var(--danger);font-size:.93rem;min-height:18px;margin-top:6px}
+    .toggle-link{background:none;border:0;color:var(--accent);cursor:pointer;text-decoration:underline;font-weight:600}
+    .small-note{font-size:.92rem;color:var(--muted);margin-top:6px}
+    .toast{position:fixed;top:20px;right:20px;background:#48bb78;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 3px 16px rgba(40,60,140,.13);font-weight:700;z-index:9999}
+  </style>
+</head>
+<body>
+  <div class="center">
+    <div class="container" role="main">
+      <div class="form-header">
+        <h1>Create Account</h1>
+        <p>Sign up to get started</p>
+      </div>
+
+      <form id="signup-form" novalidate>
+        <div class="form-group">
+          <label for="signUpName">Full Name</label>
+          <div class="input-wrapper">
+            <input id="signUpName" name="name" type="text" autocomplete="name" placeholder="Enter your full name" required>
+          </div>
+          <div class="error-message" id="err-signUpName"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="signUpUsername">Username</label>
+          <div class="input-wrapper">
+            <input id="signUpUsername" name="username" type="text" autocomplete="username" placeholder="Choose a username" required>
+            <button type="button" class="toggle-password" data-target="signUpUsername" aria-hidden="true">🙈</button>
+          </div>
+          <div class="error-message" id="err-signUpUsername"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="patientDob">Date of Birth</label>
+          <div class="input-wrapper">
+            <input id="patientDob" name="dob" type="date" placeholder="Date of Birth">
+          </div>
+          <div class="error-message" id="err-patientDob"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="signUpPassword">Password</label>
+          <div class="input-wrapper">
+            <input id="signUpPassword" name="password" type="password" placeholder="Create a password" required minlength="8">
+            <button type="button" class="toggle-password" data-target="signUpPassword" aria-label="toggle">👁️</button>
+          </div>
+          <div class="error-message" id="err-signUpPassword"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="signUpConfirmPassword">Confirm Password</label>
+          <div class="input-wrapper">
+            <input id="signUpConfirmPassword" name="confirm" type="password" placeholder="Confirm your password" required minlength="8">
+            <button type="button" class="toggle-password" data-target="signUpConfirmPassword" aria-label="toggle">👁️</button>
+          </div>
+          <div class="error-message" id="err-signUpConfirmPassword"></div>
+        </div>
+
+        <div class="form-group" style="margin-top:8px">
+          <label class="checkbox-label"><input id="agreeTerms" name="agree" type="checkbox" required> I agree to the Terms & Privacy Policy</label>
+          <div class="error-message" id="err-agreeTerms"></div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="signUpSubmit">Sign Up</button>
+      </form>
+
+      <div style="text-align:center;margin-top:14px;font-size:.98rem">
+        Already have an account?
+        <button id="goToSignIn" class="toggle-link" type="button">Sign in</button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const $ = id => document.getElementById(id);
+      const USERNAME_REGEX = /^[a-zA-Z0-9._-]{3,30}$/;
+      const STORAGE_KEY = 'sharedFormData_v1';
+
+      function showError(id, msg) {
+        const input = $(id);
+        if (input) input.classList.add('error');
+        const box = document.getElementById('err-' + id);
+        if (box) box.textContent = msg || '';
+      }
+      function clearError(id) {
+        const input = $(id);
+        if (input) input.classList.remove('error');
+        const box = document.getElementById('err-' + id);
+        if (box) box.textContent = '';
+      }
+      function clearAllErrors() {
+        ['signUpName','signUpUsername','patientDob','signUpPassword','signUpConfirmPassword','agreeTerms'].forEach(clearError);
+      }
+
+      function toast(msg, color = '#48bb78') {
+        const el = document.createElement('div');
+        el.className = 'toast';
+        el.textContent = msg;
+        el.style.background = color;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 2800);
+      }
+
+      // Toggle show/hide for password and username (username toggle is optional)
+      document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tid = btn.dataset.target;
+          const t = document.getElementById(tid);
+          if (!t) return;
+          if (t.type === 'password') { t.type = 'text'; btn.textContent = '🙈'; }
+          else { t.type = 'password'; btn.textContent = '👁️'; }
+        });
+      });
+
+      // Load shared saved fields (from signin page or a previous signup)
+      function loadShared() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          if (!data || !data.fields) return;
+          Object.keys(data.fields).forEach(key => {
+            const el = document.getElementById(key);
+            if (!el) return;
+            if (el.type === 'checkbox') el.checked = data.fields[key];
+            else el.value = data.fields[key];
+          });
+        } catch (e) { /* ignore parse errors */ }
+      }
+
+      // Save current signup form fields into shared storage
+      function saveShared(origin) {
+        const form = $('signup-form');
+        if (!form) return;
+        const fields = {};
+        Array.from(form.elements).forEach(el => {
+          if (!el.id) return;
+          if (el.type === 'checkbox' || el.type === 'radio') fields[el.id] = el.checked;
+          else fields[el.id] = el.value;
+        });
+        const payload = { from: origin || 'signup', fields, ts: Date.now() };
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch (e) {}
+      }
+
+      // Signup submit
+      $('signup-form').addEventListener('submit', e => {
+        e.preventDefault();
+        clearAllErrors();
+
+        const name = $('signUpName').value.trim();
+        const username = $('signUpUsername').value.trim();
+        const dob = $('patientDob').value;
+        const pass = $('signUpPassword').value;
+        const confirm = $('signUpConfirmPassword').value;
+        const agree = $('agreeTerms').checked;
+
+        let bad = false;
+        if (!name) { showError('signUpName','Name required'); bad = true; }
+        else if (name.length < 2) { showError('signUpName','Too short'); bad = true; }
+
+        if (!username) { showError('signUpUsername','Username required'); bad = true; }
+        else if (!USERNAME_REGEX.test(username)) { showError('signUpUsername','Invalid username (3-30: letters, numbers, . _ -)'); bad = true; }
+
+        if (!pass) { showError('signUpPassword','Password required'); bad = true; }
+        else if (pass.length < 8) { showError('signUpPassword','Min 8 characters'); bad = true; }
+
+        if (!confirm) { showError('signUpConfirmPassword','Confirm password'); bad = true; }
+        else if (pass !== confirm) { showError('signUpConfirmPassword','Passwords mismatch'); bad = true; }
+
+        if (!agree) { showError('agreeTerms','You must agree to continue'); bad = true; }
+
+        if (bad) return;
+
+        const btn = $('signUpSubmit');
+        btn.disabled = true;
+        const orig = btn.textContent;
+        btn.textContent = 'Creating...';
+
+        setTimeout(() => {
+          toast('Account created!');
+          // simulated payload (do not send real passwords to console in production)
+          const payload = { name, username, dob };
+          console.log('Simulated signup payload:', payload);
+
+          // clear sensitive fields
+          $('signUpPassword').value = '';
+          $('signUpConfirmPassword').value = '';
+
+          // store a copy for potential navigation back to sign-in
+          saveShared('signup');
+
+          btn.disabled = false;
+          btn.textContent = orig;
+
+          // optionally redirect to sign-in after a short delay
+          setTimeout(() => { window.location.href = 'signin.html'; }, 900);
+        }, 1100);
+      });
+
+      // Navigate to sign in (save state first)
+      $('goToSignIn').addEventListener('click', () => {
+        saveShared('signup');
+        window.location.href = 'signin.html';
+      });
+
+      // save beforeunload to preserve typed values
+      window.addEventListener('beforeunload', () => saveShared('signup'));
+
+      document.addEventListener('DOMContentLoaded', loadShared);
+    })();
+  </script>
+</body>
+</html>

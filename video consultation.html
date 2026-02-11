@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Video Consultation</title>
+  <style>
+    :root{
+      --background: #0f1724; /* dark background fallback */
+      --foreground: #0b1220;
+      --muted-foreground: #6b7280;
+      --primary: #0f766e; /* teal */
+      --accent: #7c3aed; /* purple */
+      --healthcare-blue: #0ea5e9; /* sky */
+      --healthcare-purple: #a78bfa;
+      --healthcare-orange: #fb923c;
+      --border: rgba(15,23,42,0.08);
+      --card-bg: #ffffff;
+      --muted: rgba(15,23,42,0.03);
+      --container-width: 1200px;
+      --radius: 12px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+
+    html,body{
+      height:100%;
+    }
+
+    body{
+      margin:0;
+      background: #f8fafc; /* light background to match original feel */
+      color:var(--foreground);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.45;
+    }
+
+    .container{
+      width:100%;
+      max-width:var(--container-width);
+      margin:0 auto;
+      padding:0 20px;
+      box-sizing:border-box;
+    }
+
+    /* Hero */
+    .hero{
+      padding:80px 0;
+      background: linear-gradient(135deg, rgba(14,165,233,0.06), rgba(248,250,252,0) 40%, rgba(167,139,250,0.06));
+    }
+    .center{
+      text-align:center;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(14,165,233,0.08);
+      color:var(--healthcare-blue);
+      font-weight:600;
+      font-size:14px;
+      margin-bottom:18px;
+    }
+    h1{
+      font-size:40px;
+      margin:12px 0 18px;
+    }
+    @media(min-width:768px){ h1{font-size:48px;} }
+
+    p.lead{
+      color:var(--muted-foreground);
+      font-size:18px;
+      margin:0 0 22px;
+    }
+
+    .actions{
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      flex-direction:column;
+    }
+    @media(min-width:640px){ .actions{flex-direction:row;} }
+
+    /* Buttons */
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:12px 18px;
+      border-radius:10px;
+      border:0;
+      cursor:pointer;
+      font-weight:700;
+      background:var(--primary);
+      color:white;
+      transition:all .15s ease;
+      font-size:16px;
+    }
+    .btn:active{ transform:translateY(1px); }
+    .btn.outline{
+      background:transparent;
+      border:2px solid rgba(15,23,42,0.06);
+      color:var(--foreground);
+    }
+    .btn.lg{ padding:14px 20px; font-size:16px; }
+
+    /* Sections */
+    section{ padding:56px 0; }
+
+    h2.section-title{
+      font-size:28px;
+      margin:0 0 28px;
+      text-align:center;
+      font-weight:800;
+    }
+
+    /* Grid for cards */
+    .grid{
+      display:grid;
+      gap:18px;
+    }
+    .grid.cols-4{
+      grid-template-columns: repeat(1, minmax(0,1fr));
+    }
+    @media(min-width:768px){ .grid.md-2{ grid-template-columns: repeat(2, 1fr); } }
+    @media(min-width:1024px){ .grid.lg-4{ grid-template-columns: repeat(4, 1fr); } }
+
+    /* Card */
+    .card{
+      background:var(--card-bg);
+      border-radius:var(--radius);
+      box-shadow:0 6px 18px rgba(12,18,26,0.04);
+      padding:18px;
+      border:1px solid rgba(15,23,42,0.06);
+      transition:border-color .15s ease, transform .12s ease;
+    }
+    .card:hover{ transform:translateY(-4px); border-color: rgba(15,23,42,0.12); }
+
+    .card.center{text-align:center;}
+
+    .avatar{
+      width:72px;
+      height:72px;
+      border-radius:50%;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+      font-size:20px;
+      color:var(--primary);
+      margin:0 auto 12px;
+      background:linear-gradient(135deg, rgba(15,118,110,0.08), rgba(124,58,237,0.08));
+    }
+
+    .icon-circle{
+      width:56px;
+      height:56px;
+      border-radius:50%;
+      background:rgba(14,165,233,0.08);
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      margin:0 auto 12px;
+    }
+
+    .card-title{ font-weight:700; margin:6px 0; font-size:16px; }
+    .muted{ color:var(--muted-foreground); font-size:14px; }
+
+    .rating{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+      margin-bottom:12px;
+    }
+    .star{
+      width:18px;
+      height:18px;
+      display:inline-block;
+      color:var(--healthcare-orange);
+      vertical-align:middle;
+    }
+
+    /* Disabled button style */
+    .btn.secondary{
+      background:transparent;
+      border:2px solid rgba(15,23,42,0.06);
+      color:var(--muted-foreground);
+    }
+    .btn.disabled, .btn[disabled]{
+      opacity:0.6;
+      cursor:not-allowed;
+    }
+
+    /* Pricing card */
+    .pricing-card{
+      max-width:720px;
+      margin:0 auto;
+      padding:32px;
+      border-radius:14px;
+      text-align:center;
+      background:linear-gradient(180deg, rgba(14,165,233,0.04), rgba(247,250,252,0.02));
+      border:1px solid rgba(14,165,233,0.12);
+    }
+    .price{
+      font-size:40px;
+      margin:8px 0;
+      color:var(--primary);
+      font-weight:800;
+    }
+    .per{
+      color:var(--muted-foreground);
+      margin-bottom:18px;
+    }
+
+    /* utility */
+    .mb-6{ margin-bottom:24px; }
+    .mb-8{ margin-bottom:32px; }
+    .mb-4{ margin-bottom:16px; }
+    .gap-2{ gap:8px; }
+
+  </style>
+</head>
+<body>
+
+  <div class="hero">
+    <div class="container">
+      <div class="center" style="max-width:760px;margin:0 auto">
+        <div class="pill" aria-hidden="true">
+          <span style="display:inline-flex;width:20px;height:20px;">
+            <!-- Video icon -->
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M15 10l4-3v10l-4-3"></path>
+              <rect x="3" y="6" width="12" height="12" rx="2"></rect>
+            </svg>
+          </span>
+          <span class="text-sm">Video Consultation</span>
+        </div>
+
+        <h1>Face-to-Face Video Consultations</h1>
+        <p class="lead">Experience personalized healthcare with secure video calls. See your doctor face-to-face from anywhere in the world.</p>
+
+        <div class="actions" style="margin-top:10px;">
+          <button id="bookVideoBtn" class="btn lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <path d="M15 10l4-3v10l-4-3"></path>
+              <rect x="3" y="6" width="12" height="12" rx="2"></rect>
+            </svg>
+            Book Video Call
+          </button>
+
+          <button id="viewScheduleBtn" class="btn lg outline">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="2"></rect>
+              <path d="M16 2v4M8 2v4M3 10h18"></path>
+            </svg>
+            View Schedule
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Benefits -->
+  <section>
+    <div class="container">
+      <h2 class="section-title">Why Choose Video Consultation?</h2>
+
+      <div class="grid md-2 lg-4 cols-4" id="benefitsGrid" style="margin-top:12px;"></div>
+    </div>
+  </section>
+
+  <!-- Available Doctors -->
+  <section style="background:rgba(15,23,42,0.02);">
+    <div class="container">
+      <h2 class="section-title">Available Doctors</h2>
+
+      <div class="grid md-2 lg-4 cols-4" id="doctorsGrid" style="margin-top:12px;"></div>
+    </div>
+  </section>
+
+  <!-- Pricing -->
+  <section>
+    <div class="container">
+      <div class="pricing-card card">
+        <h3 style="font-size:22px;margin:0 0 8px;font-weight:800;">Video Consultation Pricing</h3>
+        <div class="price">$49</div>
+        <div class="per">per 30-minute session</div>
+        <button id="scheduleCallBtn" class="btn lg">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M15 10l4-3v10l-4-3"></path>
+            <rect x="3" y="6" width="12" height="12" rx="2"></rect>
+          </svg>
+          Schedule Your Call
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Data (converted from your React arrays)
+    const benefits = [
+      { icon: "monitor", title: "HD Video Quality", description: "Crystal clear video for accurate diagnosis" },
+      { icon: "calendar", title: "Easy Scheduling", description: "Book appointments that fit your schedule" },
+      { icon: "shield", title: "HIPAA Compliant", description: "Your health data is fully protected" },
+      { icon: "clock", title: "No Wait Time", description: "Join your consultation on time, every time" },
+    ];
+
+    const doctors = [
+      { name: "Dr. Sarah Johnson", specialty: "General Medicine", rating: 4.9, available: true },
+      { name: "Dr. Michael Chen", specialty: "Cardiology", rating: 4.8, available: true },
+      { name: "Dr. Emily Davis", specialty: "Dermatology", rating: 4.9, available: false },
+      { name: "Dr. James Wilson", specialty: "Pediatrics", rating: 4.7, available: true },
+    ];
+
+    // Icon rendering helpers (simple inline SVGs)
+    function getIconSVG(name, size = 28){
+      switch(name){
+        case "monitor":
+          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="2.5" y="4" width="19" height="12" rx="1.5"></rect>
+            <path d="M8 20h8"></path>
+            <path d="M12 16v4"></path>
+          </svg>`;
+        case "calendar":
+          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+            <path d="M16 3v4M8 3v4M3 11h18"></path>
+          </svg>`;
+        case "shield":
+          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M12 2l7 4v5c0 5-3.5 9-7 11-3.5-2-7-6-7-11V6l7-4z"></path>
+          </svg>`;
+        case "clock":
+          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="12" cy="12" r="9"></circle>
+            <path d="M12 7v5l3 2"></path>
+          </svg>`;
+        case "video":
+          return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="3" y="6" width="12" height="12" rx="2"></rect>
+            <path d="M15 10l4-3v10l-4-3"></path>
+          </svg>`;
+        case "star":
+          return `<svg class="star" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 .587l3.668 7.431 8.2 1.192-5.934 5.787 1.402 8.168L12 18.896l-7.336 3.969 1.402-8.168L.132 9.21l8.2-1.192z"></path>
+          </svg>`;
+        default:
+          return "";
+      }
+    }
+
+    // Render benefits
+    const benefitsGrid = document.getElementById('benefitsGrid');
+    benefits.forEach(b => {
+      const card = document.createElement('div');
+      card.className = 'card center';
+      card.innerHTML = `
+        <div class="icon-circle" aria-hidden="true">${getIconSVG(b.icon, 22)}</div>
+        <div class="card-title">${b.title}</div>
+        <div class="muted">${b.description}</div>
+      `;
+      benefitsGrid.appendChild(card);
+    });
+
+    // Render doctors
+    const doctorsGrid = document.getElementById('doctorsGrid');
+    doctors.forEach(d => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      const initials = d.name.split(' ').map(n => n[0] || '').join('').slice(0,3).toUpperCase();
+      const availableClass = d.available ? '' : 'disabled';
+      card.innerHTML = `
+        <div style="text-align:center;">
+          <div class="avatar">${initials}</div>
+          <div class="card-title">${d.name}</div>
+          <div class="muted" style="margin-bottom:12px;">${d.specialty}</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="rating">
+            ${getIconSVG('star')}
+            <span style="font-weight:700;">${d.rating}</span>
+          </div>
+          <button class="btn ${d.available ? '' : 'secondary disabled'}" ${d.available ? '' : 'disabled'}>
+            ${d.available ? 'Book Now' : 'Unavailable'}
+          </button>
+        </div>
+      `;
+      // Add click handler for available doctors
+      const button = card.querySelector('button');
+      if (d.available) {
+        button.addEventListener('click', () => {
+          alert('Booking a video consultation with ' + d.name + '. (Demo action)');
+        });
+      }
+      doctorsGrid.appendChild(card);
+    });
+
+    // Hero and pricing buttons handlers
+    document.getElementById('bookVideoBtn').addEventListener('click', () => {
+      alert('Start booking flow for a video call. (Demo action)');
+    });
+    document.getElementById('viewScheduleBtn').addEventListener('click', () => {
+      alert('Open schedule / calendar view. (Demo action)');
+    });
+    document.getElementById('scheduleCallBtn').addEventListener('click', () => {
+      alert('Schedule your $49 video consultation. (Demo action)');
+    });
+  </script>
+</body>
+</html>

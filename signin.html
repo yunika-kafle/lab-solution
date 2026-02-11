@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sign In</title>
+  <style>
+    /* Shared styling (kept compact) */
+    :root { --accent: #4256d7; --bg: #f4f7fb; --danger: #eb556b; --muted:#6b7280; }
+    html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg)}
+    .center {min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .container{background:#fff;border-radius:1rem;box-shadow:0 4px 32px rgba(0,0,0,0.09);padding:28px;width:370px;max-width:96vw}
+    .form-header{text-align:center;margin-bottom:18px}
+    .form-header h1{margin:0;color:var(--accent);font-size:1.6rem}
+    .form-header p{margin:4px 0 0;color:var(--muted)}
+    .form-group{margin-bottom:14px}
+    label{display:block;font-weight:600;margin-bottom:6px}
+    .input-wrapper{position:relative}
+    input[type="text"],input[type="password"],input[type="date"]{
+      width:100%;padding:10px 40px 10px 10px;border:1px solid #e1e6ee;border-radius:6px;box-sizing:border-box;font-size:1rem;
+    }
+    input.error{border-color:var(--danger);background:#fdf0f2}
+    .toggle-password{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;cursor:pointer;padding:6px;font-size:1rem}
+    .form-options{display:flex;justify-content:space-between;align-items:center;font-size:.95rem;margin-bottom:8px}
+    .checkbox-label{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+    .forgot-link{color:var(--accent);text-decoration:none}
+    .submit-btn{width:100%;background:var(--accent);color:#fff;padding:11px;border-radius:6px;border:0;font-weight:700;cursor:pointer}
+    .submit-btn:disabled{background:#bbb;cursor:not-allowed}
+    .error-message{color:var(--danger);font-size:.93rem;min-height:18px;margin-top:6px}
+    .toggle-link{background:none;border:0;color:var(--accent);cursor:pointer;text-decoration:underline;font-weight:600}
+    .toast{position:fixed;top:20px;right:20px;background:#48bb78;color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 3px 16px rgba(40,60,140,.13);font-weight:700;z-index:9999}
+  </style>
+</head>
+<body>
+  <div class="center">
+    <div class="container" role="main">
+      <div class="form-header">
+        <h1>Welcome Back</h1>
+        <p>Sign in to your account</p>
+      </div>
+
+      <form id="signin-form" novalidate>
+        <div class="form-group">
+          <label for="signInUsername">Username</label>
+          <div class="input-wrapper">
+            <input id="signInUsername" name="username" type="text" autocomplete="username" placeholder="Enter your username" required>
+            <button type="button" class="toggle-password" data-target="signInUsername" aria-label="toggle">🙈</button>
+          </div>
+          <div class="error-message" id="err-signInUsername"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="signInPassword">Password</label>
+          <div class="input-wrapper">
+            <input id="signInPassword" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+            <button type="button" class="toggle-password" data-target="signInPassword" aria-label="toggle">👁️</button>
+          </div>
+          <div class="error-message" id="err-signInPassword"></div>
+        </div>
+
+        <div class="form-options">
+          <label class="checkbox-label"><input id="rememberMe" name="remember" type="checkbox"> Remember me</label>
+          <a class="forgot-link" href="#" id="forgotLink">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="submit-btn" id="signInSubmit"><span class="btn-text">Sign In</span></button>
+      </form>
+
+      <div style="text-align:center;margin-top:14px;font-size:.98rem">
+        Don’t have an account?
+        <button id="goToSignUp" class="toggle-link" type="button">Sign up</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      // Helpers
+      const $ = id => document.getElementById(id);
+      const USERNAME_REGEX = /^[a-zA-Z0-9._-]{3,30}$/;
+      const STORAGE_KEY = 'sharedFormData_v1';
+
+      function showError(id, msg) {
+        const input = $(id);
+        if (input) input.classList.add('error');
+        const box = document.getElementById('err-' + id);
+        if (box) box.textContent = msg || '';
+      }
+      function clearError(id) {
+        const input = $(id);
+        if (input) input.classList.remove('error');
+        const box = document.getElementById('err-' + id);
+        if (box) box.textContent = '';
+      }
+      function clearAllErrors() {
+        ['signInUsername','signInPassword'].forEach(clearError);
+      }
+
+      function toast(msg, color = '#48bb78') {
+        const el = document.createElement('div');
+        el.className = 'toast';
+        el.textContent = msg;
+        el.style.background = color;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 2800);
+      }
+
+      // Toggle visible password or (for username) no-op just keeps UI consistent
+      document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tid = btn.dataset.target;
+          const t = document.getElementById(tid);
+          if (!t) return;
+          if (t.type === 'password') { t.type = 'text'; btn.textContent = '🙈'; }
+          else { t.type = 'password'; btn.textContent = '👁️'; }
+        });
+      });
+
+      // Load saved shared data (prefill)
+      function loadShared() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          if (!data || !data.fields) return;
+          // apply values if inputs exist
+          Object.keys(data.fields).forEach(key => {
+            const el = document.getElementById(key);
+            if (!el) return;
+            if (el.type === 'checkbox') el.checked = data.fields[key];
+            else el.value = data.fields[key];
+          });
+        } catch (e) { /* ignore */ }
+      }
+
+      // Save current form fields into shared storage
+      function saveShared(origin) {
+        const form = $('signin-form');
+        if (!form) return;
+        const fields = {};
+        Array.from(form.elements).forEach(el => {
+          if (!el.id) return;
+          if (el.type === 'checkbox' || el.type === 'radio') fields[el.id] = el.checked;
+          else fields[el.id] = el.value;
+        });
+        const payload = { from: origin || 'signin', fields, ts: Date.now() };
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(payload)); } catch (e) { /* ignore */ }
+      }
+
+      // Form submit
+      $('signin-form').addEventListener('submit', e => {
+        e.preventDefault();
+        clearAllErrors();
+
+        const username = $('signInUsername').value.trim();
+        const password = $('signInPassword').value;
+        let bad = false;
+
+        if (!username) { showError('signInUsername','Username required'); bad = true; }
+        else if (!USERNAME_REGEX.test(username)) { showError('signInUsername','Invalid username (3-30: letters, numbers, . _ -)'); bad = true; }
+
+        if (!password) { showError('signInPassword','Password required'); bad = true; }
+        else if (password.length < 6) { showError('signInPassword','Min 6 characters'); bad = true; }
+
+        if (bad) return;
+
+        const btn = $('signInSubmit');
+        btn.disabled = true;
+        const origText = btn.textContent;
+        btn.textContent = 'Signing in...';
+
+        // simulate async
+        setTimeout(() => {
+          toast('Signed in successfully!');
+          btn.disabled = false;
+          btn.textContent = origText;
+          // clear sensitive field
+          $('signInPassword').value = '';
+          // remove shared saved signin, since signed in
+          try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+        }, 1100);
+      });
+
+      // Navigation to signup: save current state and go
+      $('goToSignUp').addEventListener('click', () => {
+        saveShared('signin');
+        // navigate to sign-up page in same folder
+        window.location.href = 'signup.html';
+      });
+
+      // also save beforeunload so accidental navigation preserves typed data
+      window.addEventListener('beforeunload', () => saveShared('signin'));
+
+      // initialize by loading shared data if any
+      document.addEventListener('DOMContentLoaded', loadShared);
+    })();
+  </script>
+</body>
+</html>

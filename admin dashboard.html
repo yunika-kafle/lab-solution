@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Dashboard</title>
+
+  <style>
+    /* Dashboard styles */
+    :root { --accent: #4256d7; --bg: #f4f7fb; --danger: #eb556b; --muted:#6b7280; --success:#48bb78; }
+    html,body{height:100%;margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:#111827}
+    
+    .layout{display:flex;min-height:100vh}
+    .sidebar{
+      width:240px;
+      background:#fff;
+      border-right:1px solid #e5e7eb;
+      padding:1.25rem;
+      box-sizing:border-box;
+    }
+    .logo{
+      font-weight:700;
+      font-size:1.1rem;
+      margin-bottom:1rem;
+      color:#111827;
+    }
+    .nav-btn{
+      width:100%;
+      border:none;
+      background:none;
+      padding:.6rem .8rem;
+      border-radius:8px;
+      text-align:left;
+      cursor:pointer;
+      color:#6b7280;
+      display:block;
+      margin-bottom:.35rem;
+      font-size:0.95rem;
+    }
+    .nav-btn:hover,.nav-btn.active{
+      background:#ccfbf1;
+      color:#0f766e;
+    }
+    .logout{color:#dc2626}
+
+    .main{flex:1;display:flex;flex-direction:column}
+    .header{
+      background:#fff;
+      padding:0.75rem 1rem;
+      border-bottom:1px solid #e5e7eb;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:1rem;
+    }
+    .header-left{display:flex;align-items:center;gap:1rem}
+    .header-right{display:flex;align-items:center;gap:.75rem}
+    .header .username{font-weight:700}
+    .icon-btn{
+      background:transparent;border:0;padding:6px;border-radius:8px;cursor:pointer;position:relative;
+    }
+    .icon-btn:hover{background:#f3f9ff}
+    .badge{
+      position:absolute;top:4px;right:4px;background:#ef4444;color:#fff;border-radius:999px;font-size:0.65rem;padding:2px 6px;
+    }
+    .avatar{
+      width:36px;height:36px;border-radius:50%;background:#7c3aed;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer;
+    }
+    .dropdown{
+      position:absolute;right:12px;top:56px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 8px 20px rgba(2,6,23,.08);min-width:200px;z-index:60;padding:8px 0;
+    }
+    .dropdown a, .dropdown button{display:block;padding:.5rem 1rem;text-align:left;border:0;background:transparent;width:100%;cursor:pointer;color:#111827}
+    .dropdown button:hover, .dropdown a:hover{background:#f1f5f9}
+
+    .content{padding:1.25rem;flex:1}
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+      gap:1rem;
+    }
+    .stat{
+      background:#fff;
+      padding:1rem;
+      border-radius:10px;
+      box-shadow:0 1px 2px rgba(16,24,40,0.03);
+    }
+    .value{font-size:1.6rem;font-weight:700}
+    .quick-access{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+    .quick-card{background:#fff;padding:12px;border-radius:8px;min-width:120px;flex:1 1 120px;display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+    .quick-card button{background:transparent;border:1px solid #e5e7eb;padding:.45rem .6rem;border-radius:6px;cursor:pointer;color:var(--accent);font-weight:700}
+    .notifications-panel{position:absolute;right:12px;top:56px;width:320px;max-height:420px;overflow:auto;background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 8px 20px rgba(2,6,23,.08);z-index:60;padding:8px}
+    .notif-item{padding:10px;border-radius:6px;border-bottom:1px solid #f3f4f6}
+    .notif-item:last-child{border-bottom:0}
+    .notif-item.unread{background:#f8fafc}
+    .footer{
+      background:#fff;
+      border-top:1px solid #e5e7eb;
+      padding:1rem 1.25rem;
+      font-size:.85rem;
+    }
+
+    /* Modal */
+    .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,0.45);display:flex;align-items:center;justify-content:center;z-index:120}
+    .modal{background:#fff;border-radius:8px;padding:18px;max-width:520px;width:100%;box-shadow:0 12px 32px rgba(2,6,23,.12)}
+    .modal h3{margin:0 0 8px}
+    .form-row{margin-bottom:12px}
+
+    .toast{position:fixed;top:20px;right:20px;background:var(--success);color:#fff;padding:10px 14px;border-radius:10px;box-shadow:0 3px 16px rgba(40,60,140,.13);font-weight:700;z-index:9999}
+
+    @media (max-width:920px){
+      .notifications-panel,.dropdown{right:8px;left:8px;top:64px}
+    }
+    @media (max-width:720px){
+      .sidebar{display:none}
+      .layout{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="layout">
+    <aside class="sidebar" aria-label="Sidebar">
+      <div class="logo">Admin Panel</div>
+      <button class="nav-btn active" aria-pressed="true">Dashboard</button>
+      <button class="nav-btn">Doctors</button>
+      <button class="nav-btn">Patients</button>
+      <button class="nav-btn">Appointments</button>
+      <button class="nav-btn">Reports</button>
+      <button class="nav-btn">Billing</button>
+      <button class="nav-btn logout" id="sidebarLogoutBtn">Logout</button>
+    </aside>
+
+    <div class="main" role="main">
+      <header class="header">
+        <div class="header-left">
+          <strong class="username">Admin</strong>
+          <div id="date" style="color:var(--muted);font-size:.95rem"></div>
+        </div>
+
+        <div class="header-right">
+          <!-- Notification Button -->
+          <div style="position:relative">
+            <button id="notifBtn" class="icon-btn" title="Notifications" aria-haspopup="true" aria-expanded="false">
+              🔔
+              <span id="notifBadge" class="badge" style="display:none">0</span>
+            </button>
+
+            <!-- notifications panel (hidden by default) -->
+            <div id="notificationsPanel" class="notifications-panel" style="display:none" aria-hidden="true">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 8px">
+                <strong>Notifications</strong>
+                <button id="markAllRead" style="border:0;background:transparent;color:var(--muted);cursor:pointer">Mark all read</button>
+              </div>
+              <div id="notifList" style="padding:6px">
+                <!-- items injected here -->
+              </div>
+              <div style="padding:8px;text-align:center">
+                <button id="viewAllNotifs" style="border:1px solid #e5e7eb;background:#fff;padding:.5rem .75rem;border-radius:6px;cursor:pointer">View all</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile avatar -->
+          <div style="position:relative">
+            <div id="avatarBtn" class="avatar" title="Account" aria-haspopup="true" aria-expanded="false">A</div>
+
+            <!-- profile dropdown -->
+            <div id="profileDropdown" class="dropdown" style="display:none" aria-hidden="true">
+              <button id="openProfile" type="button">Profile</button>
+              <button id="openChangePassword" type="button">Change Password</button>
+              <button id="profileSignOut" type="button" style="color:#dc2626">Sign out</button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        <div class="stats" aria-live="polite">
+          <div class="stat">
+            <p>Total Patients</p>
+            <div class="value" id="totalPatients">2,847</div>
+          </div>
+          <div class="stat">
+            <p>Today's Appointments</p>
+            <div class="value" id="todaysAppointments">124</div>
+          </div>
+          <div class="stat">
+            <p>Monthly Revenue</p>
+            <div class="value" id="monthlyRevenue">$89,450</div>
+          </div>
+        </div>
+
+        <div class="quick-access" role="navigation" aria-label="Quick access">
+          <div class="quick-card">
+            <strong>Doctors</strong>
+            <button type="button">Open</button>
+          </div>
+          <div class="quick-card">
+            <strong>Patients</strong>
+            <button type="button">Open</button>
+          </div>
+          <div class="quick-card">
+            <strong>Appointments</strong>
+            <button type="button">Open</button>
+          </div>
+          <div class="quick-card">
+            <strong>Reports</strong>
+            <button type="button">Open</button>
+          </div>
+          <div class="quick-card">
+            <strong>Billing</strong>
+            <button id="openBilling" type="button">Open Billing</button>
+          </div>
+        </div>
+      </main>
+
+      <footer class="footer">
+        © 2026 Neurological Hospital | Secure Admin Panel
+      </footer>
+    </div>
+  </div>
+
+  <!-- Change password modal (hidden by default) -->
+  <div id="changePwdModalBackdrop" class="modal-backdrop" style="display:none" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="changePwdTitle">
+      <h3 id="changePwdTitle">Change Password</h3>
+      <div style="color:var(--muted);margin-bottom:12px">Update your account password</div>
+
+      <div class="form-row">
+        <label for="currentPwd">Current password</label>
+        <input id="currentPwd" type="password" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px">
+      </div>
+
+      <div class="form-row">
+        <label for="newPwd">New password</label>
+        <input id="newPwd" type="password" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px">
+      </div>
+
+      <div class="form-row">
+        <label for="confirmPwd">Confirm new password</label>
+        <input id="confirmPwd" type="password" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px">
+      </div>
+
+      <div id="changePwdError" style="color:var(--danger);min-height:18px;margin-bottom:8px"></div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button id="cancelChangePwd" style="background:transparent;border:1px solid #e5e7eb;padding:8px;border-radius:6px;cursor:pointer">Cancel</button>
+        <button id="saveChangePwd" style="background:var(--accent);color:#fff;border:0;padding:8px 12px;border-radius:6px;cursor:pointer">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      /* Helpers & constants */
+      const $ = id => document.getElementById(id);
+      const PWD_KEY = 'adminProfile_v1'; // simulated profile store
+
+      /* Elements */
+      const dashboard = $('dashboard');
+      const sidebarLogoutBtn = $('sidebarLogoutBtn');
+
+      const notifBtn = $('notifBtn');
+      const notifBadge = $('notifBadge');
+      const notificationsPanel = $('notificationsPanel');
+      const notifList = $('notifList');
+      const markAllRead = $('markAllRead');
+
+      const avatarBtn = $('avatarBtn');
+      const profileDropdown = $('profileDropdown');
+      const openChangePassword = $('openChangePassword');
+      const profileSignOut = $('profileSignOut');
+
+      const changePwdModalBackdrop = $('changePwdModalBackdrop');
+      const currentPwd = $('currentPwd');
+      const newPwd = $('newPwd');
+      const confirmPwd = $('confirmPwd');
+      const changePwdError = $('changePwdError');
+      const cancelChangePwd = $('cancelChangePwd');
+      const saveChangePwd = $('saveChangePwd');
+
+      /* Simple in-memory notification store (could be replaced with server) */
+      let notifications = [
+        { id: 1, text: 'New appointment scheduled (John Doe)', time: '2h', unread: true },
+        { id: 2, text: 'Invoice #1023 generated', time: '1d', unread: true },
+        { id: 3, text: 'Patient review received', time: '3d', unread: false }
+      ];
+
+      /* Utility: show ephemeral toast */
+      function toast(msg, color = '#48bb78') {
+        const el = document.createElement('div');
+        el.className = 'toast';
+        el.textContent = msg;
+        el.style.background = color;
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 2800);
+      }
+
+      /* Escapes text for insertion into HTML */
+      function escapeHtml(str) {
+        return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+      }
+
+      /* Notifications UI */
+      function renderNotifications() {
+        notifList.innerHTML = '';
+        if (!notifications.length) {
+          notifList.innerHTML = '<div style="padding:8px;color:var(--muted)">No notifications</div>';
+        } else {
+          notifications.forEach(n => {
+            const item = document.createElement('div');
+            item.className = 'notif-item' + (n.unread ? ' unread' : '');
+            item.innerHTML = `<div style="display:flex;justify-content:space-between;gap:8px"><div style="font-size:.95rem">${escapeHtml(n.text)}</div><div style="color:var(--muted);font-size:.78rem">${n.time}</div></div>`;
+            item.addEventListener('click', () => {
+              n.unread = false;
+              renderNotifications();
+              updateNotifBadge();
+            });
+            notifList.appendChild(item);
+          });
+        }
+      }
+
+      function updateNotifBadge() {
+        const unread = notifications.filter(n => n.unread).length;
+        if (unread > 0) {
+          notifBadge.style.display = 'inline-block';
+          notifBadge.textContent = unread;
+        } else {
+          notifBadge.style.display = 'none';
+        }
+      }
+
+      /* Dropdown helpers */
+      function closeAllDropdowns() {
+        if (profileDropdown) profileDropdown.style.display = 'none';
+        if (notificationsPanel) notificationsPanel.style.display = 'none';
+      }
+
+      /* Profile / password store (simulated) */
+      function getProfile() {
+        try {
+          const raw = localStorage.getItem(PWD_KEY);
+          if (!raw) return { username: 'admin', password: 'admin123' }; // default demo
+          return JSON.parse(raw);
+        } catch (e) {
+          return { username: 'admin', password: 'admin123' };
+        }
+      }
+      function saveProfile(profile) {
+        try { localStorage.setItem(PWD_KEY, JSON.stringify(profile)); } catch (e) {}
+      }
+
+      /* Toggle notifications panel */
+      if (notifBtn) {
+        notifBtn.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          const open = notificationsPanel.style.display === 'block';
+          closeAllDropdowns();
+          notificationsPanel.style.display = open ? 'none' : 'block';
+          notificationsPanel.setAttribute('aria-hidden', open ? 'true' : 'false');
+        });
+      }
+
+      /* Mark all read */
+      if (markAllRead) {
+        markAllRead.addEventListener('click', () => {
+          notifications.forEach(n => n.unread = false);
+          renderNotifications();
+          updateNotifBadge();
+        });
+      }
+
+      /* Profile dropdown toggle */
+      if (avatarBtn) {
+        avatarBtn.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          const open = profileDropdown.style.display === 'block';
+          closeAllDropdowns();
+          profileDropdown.style.display = open ? 'none' : 'block';
+          profileDropdown.setAttribute('aria-hidden', open ? 'true' : 'false');
+        });
+      }
+
+      /* Open change password modal */
+      if (openChangePassword) {
+        openChangePassword.addEventListener('click', () => {
+          if (profileDropdown) profileDropdown.style.display = 'none';
+          changePwdModalBackdrop.style.display = 'flex';
+          changePwdModalBackdrop.setAttribute('aria-hidden','false');
+          changePwdError.textContent = '';
+          currentPwd.value = '';
+          newPwd.value = '';
+          confirmPwd.value = '';
+        });
+      }
+
+      /* Profile sign out */
+      if (profileSignOut) {
+        profileSignOut.addEventListener('click', () => {
+          toast('Logged out successfully');
+          // Redirect to login page or reload
+          window.location.href = 'index.html';
+        });
+      }
+      if (sidebarLogoutBtn) {
+        sidebarLogoutBtn.addEventListener('click', () => {
+          toast('Logged out successfully');
+          // Redirect to login page or reload
+          window.location.href = 'index.html';
+        });
+      }
+
+      /* Close modal */
+      if (cancelChangePwd) {
+        cancelChangePwd.addEventListener('click', () => {
+          changePwdModalBackdrop.style.display = 'none';
+          changePwdModalBackdrop.setAttribute('aria-hidden','true');
+        });
+      }
+
+      /* Save changed password (simulated) */
+      if (saveChangePwd) {
+        saveChangePwd.addEventListener('click', () => {
+          changePwdError.textContent = '';
+          const cur = currentPwd.value || '';
+          const nw = newPwd.value || '';
+          const conf = confirmPwd.value || '';
+
+          const profile = getProfile();
+
+          if (!cur) { changePwdError.textContent = 'Enter current password'; return; }
+          if (cur !== profile.password) { changePwdError.textContent = 'Current password is incorrect'; return; }
+          if (!nw || nw.length < 6) { changePwdError.textContent = 'New password must be at least 6 characters'; return; }
+          if (nw !== conf) { changePwdError.textContent = 'New password and confirmation do not match'; return; }
+
+          // Save new password
+          profile.password = nw;
+          saveProfile(profile);
+
+          changePwdModalBackdrop.style.display = 'none';
+          changePwdModalBackdrop.setAttribute('aria-hidden','true');
+          toast('Password updated', '#3b82f6');
+        });
+      }
+
+      /* Dismiss dropdowns/panels when clicking outside */
+      document.addEventListener('click', (ev) => {
+        const targetIsNotif = notifBtn && (notifBtn.contains(ev.target) || notificationsPanel.contains(ev.target));
+        const targetIsProfile = avatarBtn && (avatarBtn.contains(ev.target) || profileDropdown.contains(ev.target) || changePwdModalBackdrop.contains(ev.target));
+        if (!targetIsNotif && notificationsPanel) notificationsPanel.style.display = 'none';
+        if (!targetIsProfile && profileDropdown) profileDropdown.style.display = 'none';
+      });
+
+      /* Quick access billing */
+      $('openBilling').addEventListener('click', () => {
+        toast('Open Billing (placeholder)', '#2563eb');
+      });
+
+      /* Provide a way to update avatar initial from username */
+      function updateAvatarInitial() {
+        const profile = getProfile();
+        const initial = (profile.username && profile.username[0]) ? profile.username[0].toUpperCase() : 'A';
+        if (avatarBtn) avatarBtn.textContent = initial;
+        const nameEls = document.getElementsByClassName('username');
+        Array.from(nameEls).forEach(el => el.textContent = profile.username || 'Admin');
+      }
+
+      // Init on load
+      function init() {
+        updateNotifBadge();
+        renderNotifications();
+        updateAvatarInitial();
+      }
+
+      // Init on load
+      init();
+    })();
+  </script>
+</body>
+</html>
